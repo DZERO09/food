@@ -1,52 +1,38 @@
 package dz.healthyFood.shf;
 
+import dz.healthyFood.shf.repo.BreadRepository;
+import dz.healthyFood.shf.repo.RowMaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
+
 
 @SpringBootApplication
-public class ShfApplication implements CommandLineRunner {
-
-
-	record Bread(int id , String name){}
-@Service
-class BreadService {
-		private JdbcTemplate template ;
-		private final RowMapper<Bread> breadRowMapper = new RowMapper<Bread>() {
-			@Override
-			public Bread mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return new Bread(rs.getInt("id") , rs.getString("name"));
-			}
-		};
-	public BreadService(JdbcTemplate template) {
-		this.template = template;
-	}
-
-	Collection<Bread> all(){
-			return this.template.query("select * from bread", this.breadRowMapper);
-		}
-}
+public class ShfApplication {
+	@Autowired
+	BreadRepository repository;
+	@Autowired
+	RowMaterialRepository rowMaterialRepository ;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShfApplication.class, args);
 	}
 
+ /*@Bean
+	ApplicationRunner applicationRunner (BreadRepository repository , RowMaterialRepository rowMaterialRepository){
 
-	@Override
-	public void run(String... args) throws Exception {
-     Bread bread =new Bread(1 , "bagette");
+	 RowMaterial rowMaterial =rowMaterialRepository.save(new RowMaterial("farina" , "health"));
+	 Bread bread =repository.save(new Bread("matlou3","bla", Arrays.asList(rowMaterial)));
+	 return args -> {
+		 Pageable pageable =  PageRequest.of(0,  55);
+		 repository.findAllByName("matlou3" ,pageable).forEach(bread1 ->
+						 System.out.println(bread1.getName())
+				 );
 
-	}
 
+	 };
+ }*/
 
 }
